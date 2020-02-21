@@ -55,15 +55,17 @@ public struct HackerNews {
         public typealias Failure = Error
         
         let ids: [Int]
+        let limit: Int
         let session: URLSession
         
-        public init(session: URLSession = .shared, ids: [Int]) {
+        public init(session: URLSession = .shared, ids: [Int], limit: Int = 25) {
             self.session = session
             self.ids = ids
+            self.limit = limit
         }
         
         public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-            Publishers.MergeMany(ids.map { HackerNews.fetchItem(session: session, id: $0) })
+            Publishers.MergeMany(ids.dropFirst(limit).compactMap { HackerNews.fetchItem(session: session, id: $0) })
                 .collect()
                 .receive(subscriber: subscriber)
         }
@@ -74,16 +76,18 @@ public struct HackerNews {
         public typealias Failure = Error
         
         let type: FeedType
+        let limit: Int
         let session: URLSession
         
-        public init(session: URLSession = .shared, type: FeedType) {
+        public init(session: URLSession = .shared, type: FeedType, limit: Int = 25) {
             self.session = session
             self.type = type
+            self.limit = limit
         }
         
         public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
             HackerNews.fetchFeed(session: session, type: type)
-                .flatMap { HackerNews.fetchItems(session: self.session, ids: $0) }
+                .flatMap { HackerNews.fetchItems(session: self.session, ids: $0, limit: self.limit) }
                 .receive(subscriber: subscriber)
         }
     }
