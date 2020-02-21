@@ -65,7 +65,7 @@ public struct HackerNews {
         }
         
         public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-            Publishers.MergeMany(ids.dropFirst(limit).compactMap { HackerNews.fetchItem(session: session, id: $0) })
+            Publishers.MergeMany(ids.prefix(limit).compactMap { HackerNews.fetchItem(session: session, id: $0) })
                 .collect()
                 .receive(subscriber: subscriber)
         }
