@@ -1,6 +1,11 @@
 name: Swift
 
-on: [push]
+on:
+  push:
+    paths:
+      - Package.swift
+      - 'Sources/**'
+      - 'Tests/**'
 
 jobs:
   build:
