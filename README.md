@@ -1,3 +1,4 @@
 # HackerNewsCombine
+![Swift](https://github.com/ericlewis/HackerNewsCombine/workflows/Swift/badge.svg)
 
-A description of this package.
+Hacker News API written purely with combine & swift frameworks.
